@@ -1,4 +1,4 @@
-package com.web.ehrapp;
+package com.web.ehrapp.frontendapi;
 
 import com.web.ehrapp.model.User;
 import jakarta.servlet.*;

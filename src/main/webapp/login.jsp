@@ -1,3 +1,9 @@
+<%
+if(request.getSession().getAttribute("user") != null){
+    response.sendRedirect(request.getContextPath() + "/personale/dashboard.html");
+}
+%>
+
 <!DOCTYPE html>
 <html lang="da">
     <head>
@@ -19,12 +25,13 @@
                                 <img src="https://cdn.discordapp.com/attachments/948600290158977174/1018638584007368744/public-health-icon.png" class="img-fluid" style="max-width:128px;width:100%" alt="">
                                 <h1>EHR System</h1>
                                 <!-- Login delen -->
-                                <form action="/dashboard.html" method="GET">
+                                <form action="${pageContext.request.contextPath}/login" method="post">
                                     <div class = "log-in">
-                                        <label for ="username" >Brugernavn: </label><br>
-                                        <input type="text" id ="username" name="username" value="Alaa"><br>
+                                        <br>${message}<br>
+                                        <label for ="email" >E-mail: </label><br>
+                                        <input type="text" id ="email" name="email" value="alaa@gmail.com"><br>
                                         <label for="password" > Kodeord:</label><br>
-                                        <input type ="password" id="password" name="password" value="test"><br><br>
+                                        <input type ="password" id="password" name="password" value="solsol99"><br><br>
                                         <input type="submit" style="cursor:pointer" value="Log ind">
                                     </div>
                                     <!-- Afslut login delen -->

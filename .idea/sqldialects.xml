@@ -2,5 +2,8 @@
 <project version="4">
   <component name="SqlDialectMappings">
     <file url="file://$USER_HOME$/Downloads/Untitled.sql" dialect="MySQL" />
+    <file url="file://$PROJECT_DIR$/src/main/java/com/web/ehrapp/model/ConsultationDAO.java" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/src/main/java/com/web/ehrapp/model/UserDAO.java" dialect="MySQL" />
+    <file url="PROJECT" dialect="MySQL" />
   </component>
 </project>

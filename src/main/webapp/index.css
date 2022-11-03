@@ -29,7 +29,7 @@ background: #ffff;
 .col-lg-7{
 text-align: center;
 }
-.log-in input [type = "text"],[name = "username"]
+.log-in input [type = "text"],[name = "email"]
 {
 
     height: 40px;

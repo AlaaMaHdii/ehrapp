@@ -1,4 +1,4 @@
-package com.web.ehrapp;
+package com.web.ehrapp.model;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -26,8 +26,13 @@ public class DBConnection {
         }
     }
     public void connectToDb() throws SQLException {
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
         conn = DriverManager.getConnection(
-                    "jdbc:mysql://130.225.170.221:3306/" + schema+"?rewriteBatchedStatements=true","root","solsol99");
+                    "jdbc:mysql://130.225.170.165:3306/" + schema, "alaa", "SOLsol99");
     }
 
     public void closeConnection() throws SQLException {
