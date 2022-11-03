@@ -1,0 +1,68 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+body {
+    background-image: url(https://img.freepik.com/premium-photo/medicine-background-with-packs-pills-glass-bottle-medical-masks-ampoules-beige-background-with-copy-space-high-quality-photo_373520-2135.jpg);
+    backdrop-filter: blur(5px);
+    background-size:cover;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    font-family: 'Montserrat', sans-serif;
+    height: 100vh;
+    /* Fjerner margin da det ser sjovt ud ellers. */
+    /* margin: -20px 0 50px; */
+}
+
+.col-lg-7{
+background: #ffff;
+    max-width: 350px;
+    margin: -40px auto;
+    box-shadow: 2px 2px 18px #cecece;
+    padding: 30px
+
+}
+
+.col-lg-7{
+text-align: center;
+}
+.log-in input [type = "text"],[name = "username"]
+{
+
+    height: 40px;
+    font-size: 18px;
+    border-radius: 20px;
+    text-align: center;
+}
+.log-in input [type = "password"],[name = "password"]
+{
+    height: 40px;
+    font-size: 18px;
+    border-radius: 20px;
+    text-align: center;
+}
+
+.rounded{
+    border-radius: 20px;
+}
+.log-in input[type="submit"]
+{
+    border:none;
+    outline:none ;
+    height: 30px;
+    font-size: 18px;
+    width: 100px;
+  border-radius: 20px;
+
+}
+.log-in{
+    text-align: center;
+}
+
+label:hover::before .text-checkbox
+{
+    background: #70F570;
+}
