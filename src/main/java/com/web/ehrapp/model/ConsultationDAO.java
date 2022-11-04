@@ -28,11 +28,12 @@ public class ConsultationDAO {
             String cpr = result.getString(2);
             Timestamp startDate = result.getTimestamp(3);
             int duration = result.getInt(4);
-            int status = result.getInt(6);
-            //String patientName = result.getString(8);
+            String note = result.getString(6);
+            int status = result.getInt(7);
+            //String patientName = result.getString(9);
             User createdBy = new User(result.getInt(9), result.getString(10), result.getString(11), result.getString(12), result.getString(13), user.getDao());
 
-            consults.add(new Consultation(id, cpr, startDate, duration, createdBy, status, this));
+            consults.add(new Consultation(id, cpr, startDate, duration, createdBy, note, status, this));
         }
         return consults;
     }
@@ -51,7 +52,8 @@ public class ConsultationDAO {
             String cpr = result.getString(2);
             Timestamp startDate = result.getTimestamp(3);
             int duration = result.getInt(4);
-            int status = result.getInt(6);
+            String note = result.getString(6);
+            int status = result.getInt(7);
             String patientName = result.getString(8);
             User createdBy = new User(result.getInt(9), result.getString(10), result.getString(11), result.getString(12), result.getString(13), user.getDao());
 
@@ -61,6 +63,7 @@ public class ConsultationDAO {
             record.put("startDate", startDate.toInstant().toString());
             record.put("duration", duration);
             record.put("createdBy", createdBy.getName());
+            record.put("note", note);
             record.put("status", status);
             array.add(record);
         }
@@ -95,6 +98,6 @@ public class ConsultationDAO {
         ResultSet generatedKeys = pstmt.getGeneratedKeys();
         generatedKeys.next();
         int id = generatedKeys.getInt(1);
-        return new Consultation(id, cpr, startDate, duration, user, status, this);
+        return new Consultation(id, cpr, startDate, duration, user, null, status, this);
     }
 }

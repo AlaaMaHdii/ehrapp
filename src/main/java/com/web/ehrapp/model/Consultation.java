@@ -11,6 +11,16 @@ public class Consultation {
     private int duration;
     private User createdBy;
     private int status;
+
+    public String getNote() {
+        return note;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
+    }
+
+    private String note;
     private ConsultationDAO dao;
 
     public int getId() {
@@ -37,6 +47,8 @@ public class Consultation {
         this.startDate = startDate;
     }
 
+
+
     public int getDuration() {
         return duration;
     }
@@ -61,13 +73,14 @@ public class Consultation {
         this.status = status;
     }
 
-    public Consultation(int id, String cpr, Timestamp startDate, int duration, User createdBy, int status, ConsultationDAO dao) {
+    public Consultation(int id, String cpr, Timestamp startDate, int duration, User createdBy, String note, int status, ConsultationDAO dao) {
         this.id = id;
         this.cpr = cpr;
         this.startDate = startDate;
         this.duration = duration;
         this.createdBy = createdBy;
         this.status = status;
+        this.note = note;
         this.dao = dao;
     }
 }
