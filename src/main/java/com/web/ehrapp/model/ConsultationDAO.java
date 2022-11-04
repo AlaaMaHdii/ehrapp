@@ -54,8 +54,8 @@ public class ConsultationDAO {
             int duration = result.getInt(4);
             String note = result.getString(6);
             int status = result.getInt(7);
-            String patientName = result.getString(8);
-            User createdBy = new User(result.getInt(9), result.getString(10), result.getString(11), result.getString(12), result.getString(13), user.getDao());
+            String patientName = result.getString(9);
+            User createdBy = new User(result.getInt(10), result.getString(11), result.getString(12), result.getString(13), result.getString(14), user.getDao());
 
             record.put("id", id);
             record.put("patientName", patientName);
