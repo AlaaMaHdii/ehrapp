@@ -16,8 +16,9 @@ public class Consultation {
         return note;
     }
 
-    public void setNote(String note) {
+    public void setNote(String note) throws SQLException {
         this.note = note;
+        dao.updateConsultation(this);
     }
 
     private String note;
@@ -27,24 +28,23 @@ public class Consultation {
         return id;
     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
 
     public String getCpr() {
         return cpr;
     }
 
-    public void setCpr(String cpr) {
+    public void setCpr(String cpr) throws SQLException {
         this.cpr = cpr;
+        dao.updateConsultation(this);
     }
 
     public Timestamp getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(Timestamp startDate) {
+    public void setStartDate(Timestamp startDate) throws SQLException {
         this.startDate = startDate;
+        dao.updateConsultation(this);
     }
 
 
@@ -53,24 +53,27 @@ public class Consultation {
         return duration;
     }
 
-    public void setDuration(int duration) {
+    public void setDuration(int duration) throws SQLException {
         this.duration = duration;
+        dao.updateConsultation(this);
     }
 
     public User getCreatedBy() {
         return createdBy;
     }
 
-    public void setCreatedBy(User createdBy) {
+    public void setCreatedBy(User createdBy) throws SQLException {
         this.createdBy = createdBy;
+        dao.updateConsultation(this);
     }
 
     public int getStatus() {
         return status;
     }
 
-    public void setStatus(int status) {
+    public void setStatus(int status) throws SQLException {
         this.status = status;
+        dao.updateConsultation(this);
     }
 
     public Consultation(int id, String cpr, Timestamp startDate, int duration, User createdBy, String note, int status, ConsultationDAO dao) {
