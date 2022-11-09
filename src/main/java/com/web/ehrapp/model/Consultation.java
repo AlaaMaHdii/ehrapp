@@ -18,7 +18,6 @@ public class Consultation {
 
     public void setNote(String note) throws SQLException {
         this.note = note;
-        dao.updateConsultation(this);
     }
 
     private String note;
@@ -35,7 +34,6 @@ public class Consultation {
 
     public void setCpr(String cpr) throws SQLException {
         this.cpr = cpr;
-        dao.updateConsultation(this);
     }
 
     public Timestamp getStartDate() {
@@ -44,7 +42,6 @@ public class Consultation {
 
     public void setStartDate(Timestamp startDate) throws SQLException {
         this.startDate = startDate;
-        dao.updateConsultation(this);
     }
 
 
@@ -55,7 +52,6 @@ public class Consultation {
 
     public void setDuration(int duration) throws SQLException {
         this.duration = duration;
-        dao.updateConsultation(this);
     }
 
     public User getCreatedBy() {
@@ -64,7 +60,6 @@ public class Consultation {
 
     public void setCreatedBy(User createdBy) throws SQLException {
         this.createdBy = createdBy;
-        dao.updateConsultation(this);
     }
 
     public int getStatus() {
@@ -73,6 +68,9 @@ public class Consultation {
 
     public void setStatus(int status) throws SQLException {
         this.status = status;
+    }
+
+    public void updateData() throws SQLException {
         dao.updateConsultation(this);
     }
 

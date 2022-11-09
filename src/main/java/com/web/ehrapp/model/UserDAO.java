@@ -33,7 +33,7 @@ public class UserDAO {
         PreparedStatement pstmt = db.conn.prepareStatement("SELECT * FROM users WHERE email = ? LIMIT 1");
         pstmt.setString(1, email);
         ResultSet result = pstmt.executeQuery();
-        while(result.next()){   // Move the cursor to the next row
+        if(result.next()){   // Move the cursor to the next row
             int id = result.getInt(1);
             String name = result.getString(2);
             String role = result.getString(3);

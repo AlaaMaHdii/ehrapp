@@ -3,6 +3,7 @@ package com.web.ehrapp.model;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.TimeZone;
 
 public class DBConnection {
     public Connection conn;
@@ -31,6 +32,8 @@ public class DBConnection {
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
+        TimeZone.setDefault(TimeZone.getTimeZone("Europe/Copenhagen"));
+
         conn = DriverManager.getConnection(
                     "jdbc:mysql://130.225.170.165:3306/" + schema, "alaa", "SOLsol99");
     }

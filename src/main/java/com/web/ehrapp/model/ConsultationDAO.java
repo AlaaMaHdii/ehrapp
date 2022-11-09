@@ -6,6 +6,7 @@ import org.jooq.tools.json.JSONArray;
 import org.jooq.tools.json.JSONObject;
 
 import java.sql.*;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -57,6 +58,12 @@ public class ConsultationDAO {
         return null;
     }
 
+    public boolean patientExists(String cpr) throws SQLException {
+        PreparedStatement pstmt = db.conn.prepareStatement("SELECT * FROM folkeregister WHERE cpr = ?");
+        pstmt.setString(1, cpr);
+        ResultSet result = pstmt.executeQuery();
+        return result.next();
+    }
 
     public JSONObject getConsultationsJSON() throws SQLException {
         PreparedStatement pstmt = db.conn.prepareStatement("SELECT * FROM consults INNER JOIN folkeregister f on consults.cpr = f.cpr INNER JOIN users u on consults.createdBy = u.id");
@@ -79,7 +86,38 @@ public class ConsultationDAO {
             record.put("id", id);
             record.put("patientName", patientName);
             record.put("cpr", formatCpr(cpr));
-            record.put("startDate", startDate.toInstant().toString());
+            record.put("startDate", startDate);
+            record.put("duration", duration);
+            record.put("createdBy", createdBy.getName());
+            record.put("note", note);
+            record.put("status", status);
+            array.add(record);
+        }
+        jsonObject.put("data", array);
+        return jsonObject;
+    }
+    public JSONObject getConsultationJSON(int id) throws SQLException {
+        PreparedStatement pstmt = db.conn.prepareStatement("SELECT * FROM consults INNER JOIN folkeregister f on consults.cpr = f.cpr INNER JOIN users u on consults.createdBy = u.id WHERE consults.id = ?");
+        pstmt.setInt(1, id);
+        ResultSet result = pstmt.executeQuery();
+
+        JSONObject jsonObject = new JSONObject();
+        JSONArray array = new JSONArray();
+
+        while (result.next()) {   // Move the cursor to the next row
+            JSONObject record = new JSONObject();
+            String cpr = result.getString(2);
+            Timestamp startDate = result.getTimestamp(3);
+            int duration = result.getInt(4);
+            String note = result.getString(6);
+            int status = result.getInt(7);
+            String patientName = result.getString(9);
+            User createdBy = new User(result.getInt(10), result.getString(11), result.getString(12), result.getString(13), result.getString(14), user.getDao());
+
+            record.put("id", id);
+            record.put("patientName", patientName);
+            record.put("cpr", formatCpr(cpr));
+            record.put("startDate", startDate);
             record.put("duration", duration);
             record.put("createdBy", createdBy.getName());
             record.put("note", note);
@@ -106,6 +144,16 @@ public class ConsultationDAO {
         pstmt.execute();
     }
 
+    public void deleteConsultation(Consultation consultation) throws SQLException {
+        PreparedStatement pstmt = db.conn.prepareStatement("DELETE FROM consults WHERE id = ?");
+        pstmt.setInt(1, consultation.getId());
+        pstmt.execute();
+    }
+    public void deleteConsultation(int id) throws SQLException {
+        PreparedStatement pstmt = db.conn.prepareStatement("DELETE FROM consults WHERE id = ?");
+        pstmt.setInt(1, id);
+        pstmt.execute();
+    }
 
     public Consultation createConsultation(String cpr, Timestamp startDate, int duration, String note, int status) throws SQLException {
         PreparedStatement pstmt = db.conn.prepareStatement("INSERT INTO consults (cpr, startdate, duration, createdBy, status, note) VALUES (?, ?, ?, ?, ?, ?);", Statement.RETURN_GENERATED_KEYS);
