@@ -102,10 +102,18 @@ $(document).ready( function () {
             info: false
         },
         dom: "Bfrtip",
-        buttons: [
+        buttons: [ {
+            extend: 'pdf',
+            customize: function (doc) {
+                // fix fra https://stackoverflow.com/questions/35642802/datatables-export-pdf-with-100-width
+                doc.content[1].table.widths =
+                    Array(doc.content[1].table.body[0].length + 1).join('*').split('');
+            }
+        }, 'excel',
             { extend: "create", editor: editor },
             { extend: "edit",   editor: editor },
             { extend: "remove", editor: editor }
         ]
     });
 } );
+
