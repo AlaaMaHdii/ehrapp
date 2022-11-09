@@ -197,12 +197,12 @@ public class Consultations extends Application {
                 // Note
                 String note = formParams.getFirst("data[" + id + "][note]");
                 if(note != null) {
-                    response.setStatus(400);
-                    response.flushBuffer();
                     consultation.setNote(note);
                 }
 
                 if(errorOccured){
+                    response.setStatus(400);
+                    response.flushBuffer();
                     return addErrors(errors.toArray(new String[0]), fieldNames.toArray(new String[0])).toString();
                 }
 
