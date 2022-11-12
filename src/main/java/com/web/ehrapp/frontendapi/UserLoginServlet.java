@@ -50,6 +50,11 @@ public class UserLoginServlet extends HttpServlet {
         String password = request.getParameter("password");
         String destination = "/login.jsp";
         try {
+            // Bug serveren mister forbindelse til MySQL efter noget tid.
+            if(dao.db.conn.isClosed()){
+                dao.db.connectToDb();
+            }
+
             user = dao.getUser(email); // hent brugeren
             String message;
             if(user == null){
@@ -69,7 +74,8 @@ public class UserLoginServlet extends HttpServlet {
             dispatcher.forward(request, response);
 
         } catch (IOException | SQLException ex) {
-            String message = "Kommunikation med intern server fejlet.";
+
+            String message = "Kommunikation med intern server fejlet. Prøv igen.";
             request.setAttribute("message", message);
             RequestDispatcher dispatcher = request.getRequestDispatcher(destination);
             dispatcher.forward(request, response);

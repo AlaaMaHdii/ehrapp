@@ -3,6 +3,7 @@ package com.web.ehrapp.model;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.Objects;
 import java.util.TimeZone;
 
 public class DBConnection {
@@ -26,6 +27,12 @@ public class DBConnection {
             this.schema = schema;
         }
     }
+    public void reconnect() throws SQLException {
+        if(!conn.isClosed()){
+            connectToDb();
+        }
+    }
+
     public void connectToDb() throws SQLException {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
@@ -39,7 +46,7 @@ public class DBConnection {
     }
 
     public void closeConnection() throws SQLException {
-        if(conn != null){
+        if(!Objects.requireNonNull(conn).isClosed()){
             conn.close();
         }
     }
