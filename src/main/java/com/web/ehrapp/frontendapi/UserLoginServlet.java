@@ -1,5 +1,7 @@
 package com.web.ehrapp.frontendapi;
 
+import com.twilio.Twilio;
+import com.twilio.rest.verify.v2.service.Verification;
 import com.web.ehrapp.model.User;
 import com.web.ehrapp.model.UserDAO;
 import jakarta.servlet.RequestDispatcher;
@@ -12,13 +14,17 @@ import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.Objects;
 
 @WebServlet("/login")
 public class UserLoginServlet extends HttpServlet {
 
     UserDAO dao;
+    public boolean OTP_ENABLED = false;
+
 
     public void init() {
+        Twilio.init("AC0ff136a5f7795a5cc92de171166f4154", "100de7b2cc06a042c5987992e1f6012d");
         try {
             dao = new UserDAO();
         } catch (SQLException e) {
@@ -36,6 +42,14 @@ public class UserLoginServlet extends HttpServlet {
         }
 
 
+    }
+
+    public Verification sendSms(User user){
+        return Verification.creator(
+                        "VAa420d68692e24ceb2f73412af976d7a3",
+                        user.getPhoneNumber(),
+                        "sms")
+                .create();
     }
 
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -66,7 +80,15 @@ public class UserLoginServlet extends HttpServlet {
             }else{
                 HttpSession session = request.getSession();
                 session.setAttribute("user", user);
-                response.sendRedirect(request.getContextPath() + "/personale/dashboard.html");
+                if(user.isPhoneNumberRegistered() && OTP_ENABLED){
+                    session.setAttribute("otpVerified", false);
+                    session.setAttribute("otpTries", 0);
+                    response.sendRedirect(request.getContextPath() + "/otp.jsp");
+                    sendSms(user);
+                }else{
+                    session.setAttribute("otpVerified", true);
+                    response.sendRedirect(request.getContextPath() + "/personale/dashboard.html");
+                }
                 return;
             }
             request.setAttribute("message", message);
@@ -74,11 +96,11 @@ public class UserLoginServlet extends HttpServlet {
             dispatcher.forward(request, response);
 
         } catch (IOException | SQLException ex) {
-
             String message = "Kommunikation med intern server fejlet. Prøv igen.";
             request.setAttribute("message", message);
             RequestDispatcher dispatcher = request.getRequestDispatcher(destination);
             dispatcher.forward(request, response);
+
         }
     }
     public void destroy() {

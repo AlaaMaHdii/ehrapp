@@ -46,6 +46,8 @@ public class Consultations extends Application {
         MultivaluedMap<String, String> formParams = form.asMap();
         ConsultationDAO dao = new ConsultationDAO(user);
 
+
+        // Ikke det bedste, men virker for nu.
         for (String id : ids) {
             dao.deleteConsultation(Integer.parseInt(id));
         }

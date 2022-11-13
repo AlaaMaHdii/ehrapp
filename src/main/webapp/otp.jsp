@@ -1,13 +1,4 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
-<%
-    if(session.getAttribute("user") !=null && session.getAttribute("otpVerified").equals(true))
-    {
-        response.sendRedirect(request.getContextPath() + "/personale/dashboard.html");
-    }else if (session.getAttribute("user") !=null && session.getAttribute("otpVerified").equals(false)){
-        response.sendRedirect(request.getContextPath() + "/otp.jsp");
-    }
-
-%>
 
 
 <html lang="da"><head>
@@ -33,8 +24,8 @@
                                 <div class="mb-5">
                                     <img src="https://i.imgur.com/eP2kkTb.png" style="height: 100px" alt="logo" class="logo">
                                 </div>
-                                <h6 class="h5 mb-0" style=" color: #fff;">Velkommen tilbage!</h6>
-                                <p class="text-muted mt-2" style="color: #a1a1a1!important;">Indtast din e-mailadresse og adgangskode for at få adgang til EHR-systemet.</p>
+                                <h6 class="h5 mb-0" style=" color: #fff;">Velkommen, ${user.getName().split(" ")[0]}!</h6>
+                                <p class="text-muted mt-2" style="color: #a1a1a1!important;">Vi har sendt dig en 2FA-kode til din telefon.</p>
                                 <%
                                     if(request.getAttribute("message") != null){
                                 %>
@@ -42,27 +33,18 @@
                                     ${message}
                                 </div>
 
-                               <% }
-                               %>
+                                <% }
+                                %>
 
-                                <form action="${pageContext.request.contextPath}/login" method="post">
+                                <form action="${pageContext.request.contextPath}/otp" method="post">
                                     <div class="form-group">
-                                        <label style="color: #fff;">Email</label>
-                                        <div class="input-group">
+                                        <label style="color: #fff;">2FA-adgangskoden</label>
+                                        <div class="input-group mb-3">
                                             <div class="input-group-text"><i class="bi bi-person-fill"></i></div>
-                                            <input type="text" class="form-control" placeholder="Indtast Email" id="email" name="email" value="alaa@gmail.com">
-                                        </div>
-                                    </div>
-                                    <br>
-                                    <div class="form-group mb-5">
-                                        <label style="color: #fff;">Kodeord</label>
-                                        <div class="input-group">
-                                            <div class="input-group-text"><i class="bi bi-lock-fill"></i></div>
-                                            <input type="password" id="password" name="password" class="form-control" placeholder="Indtast kodeord" value="solsol99">
+                                            <input type="text" class="form-control" placeholder="Indtast 2FA" id="otp" name="otp">
                                         </div>
                                     </div>
                                     <button type="submit" class="btn btn-theme">Log ind</button>
-                                    <a href="#glemtKode" class="forgot-link float-right text-primary" style="padding-left: 10px;color:#c7ddff!important">Glemt adgangskode?</a>
                                 </form>
                             </div>
                         </div>

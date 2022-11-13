@@ -33,7 +33,13 @@ public class AuthenticationAPIFilter implements ContainerRequestFilter {
         // Hvis man er logget ind med SESSION
         HttpSession session = webRequest.getSession();
         User user = (User) session.getAttribute("user");
-        if(user == null && !containerRequestContext.getUriInfo().getPath().endsWith("login.jsp")){
+        boolean otpVerified = false;
+        try {
+            otpVerified = (boolean) session.getAttribute("otpVerified");
+        }catch (Exception e){
+
+        }
+        if((!otpVerified || user == null) && !containerRequestContext.getUriInfo().getPath().endsWith("login.jsp")){
             throw new NotAuthorizedException("Ugyldig legitimationsoplysninger.");
         }
 

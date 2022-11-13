@@ -1,10 +1,17 @@
 package com.web.ehrapp.model;
 
 import java.security.Principal;
+import java.util.Objects;
+
 import at.favre.lib.crypto.bcrypt.BCrypt;
 
 public class User implements Principal {
 
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    private final String phoneNumber;
     private int id;
     private String name;
     private String role;
@@ -17,11 +24,12 @@ public class User implements Principal {
 
     private UserDAO dao;
 
-    public User(int id, String name, String role, String email, String password, UserDAO dao) {
+    public User(int id, String name, String role, String email, String password, String phoneNumber, UserDAO dao) {
         this.id = id;
         this.name = name;
         this.role = role;
         this.email = email;
+        this.phoneNumber = phoneNumber;
         this.password = password;
         this.dao = dao;
     }
@@ -49,6 +57,9 @@ public class User implements Principal {
         return email;
     }
 
+    public boolean isPhoneNumberRegistered(){
+        return phoneNumber != null || !Objects.equals(phoneNumber, "");
+    }
     public boolean setName(String name) {
         String originalName = this.name;
         this.name = name;

@@ -32,7 +32,7 @@ public class ConsultationDAO {
             String note = result.getString(6);
             int status = result.getInt(7);
             //String patientName = result.getString(9);
-            User createdBy = new User(result.getInt(10), result.getString(11), result.getString(12), result.getString(13), result.getString(14), user.getDao());
+            User createdBy = new User(result.getInt(10), result.getString(11), result.getString(12), result.getString(13), result.getString(14), result.getString(15), user.getDao());
 
             consults.add(new Consultation(id, cpr, startDate, duration, createdBy, note, status, this));
         }
@@ -51,7 +51,7 @@ public class ConsultationDAO {
             String note = result.getString(6);
             int status = result.getInt(7);
             //String patientName = result.getString(9);
-            User createdBy = new User(result.getInt(10), result.getString(11), result.getString(12), result.getString(13), result.getString(14), user.getDao());
+            User createdBy = new User(result.getInt(10), result.getString(11), result.getString(12), result.getString(13), result.getString(14), result.getString(15), user.getDao());
 
             return new Consultation(id, cpr, startDate, duration, createdBy, note, status, this);
         }
@@ -81,7 +81,7 @@ public class ConsultationDAO {
             String note = result.getString(6);
             int status = result.getInt(7);
             String patientName = result.getString(9);
-            User createdBy = new User(result.getInt(10), result.getString(11), result.getString(12), result.getString(13), result.getString(14), user.getDao());
+            User createdBy = new User(result.getInt(10), result.getString(11), result.getString(12), result.getString(13), result.getString(14), result.getString(15), user.getDao());
 
             record.put("id", id);
             record.put("patientName", patientName);
@@ -112,7 +112,7 @@ public class ConsultationDAO {
             String note = result.getString(6);
             int status = result.getInt(7);
             String patientName = result.getString(9);
-            User createdBy = new User(result.getInt(10), result.getString(11), result.getString(12), result.getString(13), result.getString(14), user.getDao());
+            User createdBy = new User(result.getInt(10), result.getString(11), result.getString(12), result.getString(13), result.getString(14), result.getString(15), user.getDao());
 
             record.put("id", id);
             record.put("patientName", patientName);

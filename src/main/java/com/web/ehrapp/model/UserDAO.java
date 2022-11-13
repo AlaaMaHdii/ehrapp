@@ -24,7 +24,8 @@ public class UserDAO {
             String role = result.getString(3);
             String email = result.getString(4);
             String password = result.getString(5);
-            return new User(id, name, role, email, password, this);
+            String phoneNumber = result.getString(6);
+            return new User(id, name, role, email, password, phoneNumber,this);
         }
         return null;
     }
@@ -38,13 +39,14 @@ public class UserDAO {
             String name = result.getString(2);
             String role = result.getString(3);
             String password = result.getString(5);
-            return new User(id, name, role, email, password, this);
+            String phoneNumber = result.getString(6);
+            return new User(id, name, role, email, password, phoneNumber,this);
         }
         return null;
     }
 
-    public User createUser(String name, String role, String email, String password) throws SQLException {
-        PreparedStatement pstmt = db.conn.prepareStatement("INSERT INTO users (name, role, email, password) VALUES (?, ?, ?, ?);", Statement.RETURN_GENERATED_KEYS);
+    public User createUser(String name, String role, String email, String password, String phoneNumber) throws SQLException {
+        PreparedStatement pstmt = db.conn.prepareStatement("INSERT INTO users (name, role, email, password, phoneNumber) VALUES (?, ?, ?, ?, ?);", Statement.RETURN_GENERATED_KEYS);
         pstmt.setString(1, name);
         pstmt.setString(2, role);
         pstmt.setString(3, email.toLowerCase());
@@ -53,7 +55,7 @@ public class UserDAO {
         ResultSet generatedKeys = pstmt.getGeneratedKeys();
         generatedKeys.next();
         int id = generatedKeys.getInt(1);
-        return new User(id, name, role, email, password, this);
+        return new User(id, name, role, email, password, phoneNumber,this);
     }
 
     public void deleteUser(User user) throws SQLException {

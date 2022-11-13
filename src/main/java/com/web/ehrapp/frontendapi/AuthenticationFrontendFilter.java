@@ -10,7 +10,7 @@ import jakarta.ws.rs.ext.Provider;
 
 import java.io.IOException;
 
-@WebFilter("/personale/*")
+@WebFilter({"/personale/*", "/otp.jsp"})
 public class AuthenticationFrontendFilter implements Filter {
 
 
@@ -24,13 +24,26 @@ public class AuthenticationFrontendFilter implements Filter {
         HttpServletRequest req = (HttpServletRequest) request;
         HttpServletResponse res = (HttpServletResponse) response;
 
+
+
         HttpSession session = ((HttpServletRequest) request).getSession();
         User user = (User) session.getAttribute("user");
 
-        if(user == null && !req.getRequestURI().endsWith("login.jsp")){
-            req.setAttribute("message", "Du skal logge ind først.");
+        boolean otpVerified = false;
+        try {
+            otpVerified = (boolean) session.getAttribute("otpVerified");
+        }catch (Exception e){
+
+        }
+
+
+        if(user == null && (!req.getRequestURI().endsWith("login.jsp") || req.getRequestURI().endsWith("otp.jsp")) ){
+            //req.setAttribute("message", "Du skal logge ind først.");
             res.sendRedirect(req.getContextPath() + "/login.jsp");
-        }else{
+        } else if ( !req.getRequestURI().endsWith("otp.jsp") && !otpVerified) {
+            //req.setAttribute("message", "Du skal logge ind med 2FA først.");
+            res.sendRedirect(req.getContextPath() + "/otp.jsp");
+        } else{
             // Go to next filter.
             filterChain.doFilter(request, response);
         }

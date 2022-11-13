@@ -31,7 +31,7 @@
             <ul  class="ms-auto navbar-nav">
                 <!--- Li = række i en liste-->
                 <li class="nav-item">
-                    <a class="nav-link active" href="dashboard.html">Overblik</a>
+                    <a class="nav-link" href="dashboard.html">Overblik</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="folkeregister.html">Folkeregister</a>
@@ -39,7 +39,7 @@
 
                 <!--- HVIS man er ADMINISTRATOR--->
                 <li class="nav-item">
-                    <a class="nav-link" href="sundhedspersonale.html">Sundhedspersonale</a>
+                    <a class="nav-link active" href="sundhedspersonale.html">Sundhedspersonale</a>
                 </li>
                 <!--- SLUT HVIS man er ADMINISTRATOR--->
                 <li class="nav-item">
@@ -70,10 +70,11 @@
         <thead>
         <tr>
             <th>Navn</th>
-            <th>CPR</th>
-            <th>Dato</th>
-            <th>Varighed</th>
-            <th>Note</th>
+            <th>Rolle</th>
+            <th>E-mail</th>
+            <th>Telefon-nummer</th>
+            <!--- Skal bare vise random karakter. --->
+            <th>Password</th>
         </tr>
         </thead>
     </table>
@@ -92,6 +93,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/locale/da.min.js" crossorigin="anonymous"></script>
 
 <!--- Eget JS kode --->
-<script src="js/consults.js" crossorigin="anonymous"></script>
+<script src="js/sp.js" crossorigin="anonymous"></script>
 </body>
 </html>
