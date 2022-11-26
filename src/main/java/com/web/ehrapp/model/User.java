@@ -18,13 +18,16 @@ public class User implements Principal {
     private String email;
     private String password;
 
+    private boolean disabled;
+
     public UserDAO getDao() {
         return dao;
     }
 
     private UserDAO dao;
 
-    public User(int id, String name, String role, String email, String password, String phoneNumber, UserDAO dao) {
+
+    public User(int id, String name, String role, String email, String password, String phoneNumber, boolean disabled, UserDAO dao) {
         this.id = id;
         this.name = name;
         this.role = role;
@@ -32,6 +35,7 @@ public class User implements Principal {
         this.phoneNumber = phoneNumber;
         this.password = password;
         this.dao = dao;
+        this.disabled = disabled;
     }
 
     public boolean checkPassword(String inputPassword){
@@ -57,66 +61,31 @@ public class User implements Principal {
         return email;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public boolean isDisabled() {
+        return disabled;
+    }
+
+    public void setDisabled(boolean disabled) {
+        this.disabled = disabled;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
     public boolean isPhoneNumberRegistered(){
         return phoneNumber != null || !Objects.equals(phoneNumber, "");
-    }
-    public boolean setName(String name) {
-        String originalName = this.name;
-        this.name = name;
-        try {
-            // Send de nye detajler til SQL databasen
-            dao.updateUser(this);
-        } catch (Exception e){
-            // Hvis den fejler, så skifter vi tilbage.
-            this.name = originalName;
-            return false;
-        }
-        return true;
-    }
-
-    public boolean setRole(String role) {
-        String originalRole = this.role;
-        this.role = role;
-        try {
-            // Send de nye detajler til SQL databasen
-            dao.updateUser(this);
-        } catch (Exception e){
-            // Hvis den fejler, så skifter vi tilbage.
-            this.role = originalRole;
-            return false;
-        }
-        return true;
-    }
-
-
-    public boolean setEmail(String newEmail) {
-        String originalEmail = this.email;
-        this.email = newEmail;
-        try {
-            // Send de nye detajler til SQL databasen
-            dao.updateUser(this);
-        } catch (Exception e){
-            // Hvis den fejler, så skifter vi tilbage.
-            this.email = originalEmail;
-            return false;
-        }
-        return true;
-    }
-
-
-    public boolean setPassword(String password) {
-        // Gem den originale kodeord
-        String originalPassword = this.password;
-        // Kryptere den nye kodeord
-        this.password = dao.encryptPassword(password);
-        try {
-            // Send de nye detajler til SQL databasen
-            dao.updateUser(this);
-        } catch (Exception e){
-            // Hvis den fejler, så skifter vi tilbage.
-            this.password = originalPassword;
-            return false;
-        }
-        return true;
     }
 }

@@ -77,7 +77,9 @@ public class UserLoginServlet extends HttpServlet {
             }else if(!user.checkPassword(password)){
                 //String message = "Ugyldig kodeord. Prøv igen.";
                 message = "Ugyldig email/kodeord. Prøv igen."; // email enumeration er en sikkerhedsrisiko ifølge OWASP
-            }else{
+            } else if (user.isDisabled()) {
+                message = "Din konto er blevet blokeret.";
+            } else{
                 HttpSession session = request.getSession();
                 session.setAttribute("user", user);
                 if(user.isPhoneNumberRegistered() && OTP_ENABLED){

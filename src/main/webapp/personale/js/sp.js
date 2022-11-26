@@ -34,65 +34,62 @@ $.fn.dataTable.render.moment = function ( from, to, locale ) {
 $(document).ready( function () {
     editor = new $.fn.dataTable.Editor({
         idSrc:  'id',
-        table: "#consults",
+        table: "#personale",
         ajax: {
             create: {
                 type: 'PUT',
-                url:  '../rest/consultations'
+                url:  '../rest/sundhedspersonale'
             },
             edit: {
                 type: 'POST',
-                url:  '../rest/consultations?id={id}'
+                url:  '../rest/sundhedspersonale?id={id}'
             },
             remove: {
                 type: 'DELETE',
-                url:  '../rest/consultations?id={id}'
+                url:  '../rest/sundhedspersonale?id={id}'
             }
         },
         fields: [
             {
-                label: "CPR-nummer",
-                name: "cpr"
+                label: "Navn",
+                name: "name"
             },
             {
-                label: "Dato",
-                name: "startDate",
-                type: "datetime",
-                displayFormat: "YYYY-MM-DD HH:mm",
-                wireFormat: "YYYY-MM-DD HH:mm"
+                label: "Telefonnummer",
+                name: "phoneNumber"
             },
             {
-                label: "Varighed i sek",
-                name: "duration"
+                label: "Stilling",
+                name: "roles"
             },
             {
-                label: "Note",
-                name: "note"
-            }]
+                label: "email",
+                name: "email"
+            },
+            {
+                label: "Adgangskode",
+                name: "password"
+            }
+            ]
     });
 
     // Activate an inline edit on click of a table cell
     // tbody td.editable
-    $('#consults').on( 'click', 'tbody td:not(:first-child)', function (e) {
+    $('#personale').on( 'click', 'tbody td:not(:first-child)', function (e) {
         editor.inline( this, {
             buttons: { label: '&gt;', fn: function () { this.submit(); } }
         } );
     } );
 
 
-    $('#consults').DataTable({
+    $('#personale').DataTable({
         ajax: '../rest/consultations',
         columns: [
-            { data: 'patientName' },
-            { data: 'cpr' },
-            { data: 'startDate', render: $.fn.dataTable.render.moment('YYYY-MM-DD HH:mm:ss.SSSS', 'YYYY-MM-DD HH:mm', 'da' )},
-            { data: 'duration', render: function ( data, type, row, meta ) {
-                    if(type === 'display'){
-                        return capitalize(moment.duration({"seconds": data}).humanize());
-                    }
-                    return data;
-                } },
-            { data: 'note', className: 'editable' },
+            { data: 'name' },
+            { data: 'phoneNumber' },
+            { data: 'roles' },
+            { data: 'email' },
+            { data: 'password'}
         ],
         responsive: true,
         language: {

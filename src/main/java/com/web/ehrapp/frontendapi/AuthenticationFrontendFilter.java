@@ -43,7 +43,13 @@ public class AuthenticationFrontendFilter implements Filter {
         } else if ( !req.getRequestURI().endsWith("otp.jsp") && !otpVerified) {
             //req.setAttribute("message", "Du skal logge ind med 2FA først.");
             res.sendRedirect(req.getContextPath() + "/otp.jsp");
-        } else{
+        } else if (user != null && user.isDisabled()) {
+            // konto blokeret.
+            request.setAttribute("message", "Din konto er blevet blokeret.");
+            RequestDispatcher dispatcher = request.getRequestDispatcher( "/login.jsp");
+            dispatcher.forward(request, response);
+            res.sendRedirect(req.getContextPath() + "/login.jsp");
+        }else{
             // Go to next filter.
             filterChain.doFilter(request, response);
         }
