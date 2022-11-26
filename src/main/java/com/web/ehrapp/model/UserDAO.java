@@ -50,14 +50,14 @@ public class UserDAO {
     }
 
     public JSONObject getUserJSON(String email) throws SQLException {
-        PreparedStatement pstmt = db.conn.prepareStatement("SELECT * FROM users WHERE email = ? LIMIT 1");
+        PreparedStatement pstmt = db.conn.prepareStatement("SELECT users.*, count(c.createdBy) as antal_konsultationer from users left join consults c on users.id = c.createdBy WHERE email = ? LIMIT 1");
         pstmt.setString(1, email);
         ResultSet result = pstmt.executeQuery();
         return parseResultUser(result);
     }
 
     public JSONObject getUsersJSON() throws SQLException {
-        PreparedStatement pstmt = db.conn.prepareStatement("SELECT * FROM users");
+        PreparedStatement pstmt = db.conn.prepareStatement("SELECT users.*, count(c.createdBy) as antal_konsultationer from users left join consults c on users.id = c.createdBy group by users.id");
         ResultSet result = pstmt.executeQuery();
         return parseResultUser(result);
     }
@@ -76,6 +76,7 @@ public class UserDAO {
             String password = result.getString(5);
             String phoneNumber = result.getString(6);
             boolean disabled = result.getBoolean(7);
+            int antalKonsultationer = result.getInt(8);
             User user =  new User(id, name, role, email, password, phoneNumber,disabled, this);
 
             record.put("id", user.getId());
@@ -85,6 +86,7 @@ public class UserDAO {
             record.put("email", user.getEmail());
             record.put("password", randomPasswordBlur(5, 10));
             record.put("isDisabled", disabled);
+            record.put("antalKonsultationer", antalKonsultationer);
             array.add(record);
         }
         jsonObject.put("data", array);
