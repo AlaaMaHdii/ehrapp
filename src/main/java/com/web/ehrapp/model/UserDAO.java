@@ -9,6 +9,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import static com.web.ehrapp.api.Sundhedspersonale.sanitizeXSS;
+
 public class UserDAO {
     public DBConnection db;
 
@@ -82,10 +84,10 @@ public class UserDAO {
             User user =  new User(id, name, role, email, password, phoneNumber,disabled, this);
 
             record.put("id", user.getId());
-            record.put("name", user.getName());
-            record.put("phoneNumber", user.getPhoneNumber());
-            record.put("roles", user.getRole());
-            record.put("email", user.getEmail());
+            record.put("name", sanitizeXSS(user.getName()));
+            record.put("phoneNumber", sanitizeXSS(user.getPhoneNumber()));
+            record.put("roles", sanitizeXSS(user.getRole()));
+            record.put("email", sanitizeXSS(user.getEmail()));
             record.put("password", randomPasswordBlur(5, 10));
             record.put("isDisabled", disabled);
             record.put("antalKonsultationer", antalKonsultationer);

@@ -42,7 +42,7 @@ public class DBConnection {
         TimeZone.setDefault(TimeZone.getTimeZone("Europe/Copenhagen"));
 
         conn = DriverManager.getConnection(
-                    "jdbc:mysql://130.225.170.165:3306/" + schema, "alaa", "SOLsol99");
+                    "jdbc:mysql://134.209.252.170:3306/" + schema, "root", "solsol99");
     }
 
     public void closeConnection() throws SQLException {

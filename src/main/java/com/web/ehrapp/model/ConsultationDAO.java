@@ -10,6 +10,8 @@ import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.web.ehrapp.api.Sundhedspersonale.sanitizeXSS;
+
 public class ConsultationDAO {
     public DBConnection db;
     public User user;
@@ -85,11 +87,11 @@ public class ConsultationDAO {
 
             record.put("id", id);
             record.put("patientName", patientName);
-            record.put("cpr", formatCpr(cpr));
+            record.put("cpr", sanitizeXSS(formatCpr(cpr)));
             record.put("startDate", startDate);
             record.put("duration", duration);
             record.put("createdBy", createdBy.getName());
-            record.put("note", note);
+            record.put("note", sanitizeXSS(note));
             record.put("status", status);
             array.add(record);
         }
@@ -116,11 +118,11 @@ public class ConsultationDAO {
 
             record.put("id", id);
             record.put("patientName", patientName);
-            record.put("cpr", formatCpr(cpr));
+            record.put("cpr", sanitizeXSS(formatCpr(cpr)));
             record.put("startDate", startDate);
             record.put("duration", duration);
             record.put("createdBy", createdBy.getName());
-            record.put("note", note);
+            record.put("note", sanitizeXSS(note));
             record.put("status", status);
             array.add(record);
         }

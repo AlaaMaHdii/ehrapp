@@ -8,6 +8,8 @@ import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.*;
 import org.jooq.tools.json.JSONArray;
 import org.jooq.tools.json.JSONObject;
+import org.owasp.html.PolicyFactory;
+import org.owasp.html.Sanitizers;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -195,6 +197,11 @@ public class Sundhedspersonale extends Application {
     public String[] getIds(HttpServletRequest req){
         String paramId = req.getParameter("id");
         return paramId.split(",");
+    }
+
+    public static String sanitizeXSS(String unsafeInput){
+        PolicyFactory policy = Sanitizers.FORMATTING.and(Sanitizers.LINKS);
+        return policy.sanitize(unsafeInput);
     }
 
 }

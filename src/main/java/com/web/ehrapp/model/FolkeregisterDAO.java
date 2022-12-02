@@ -6,6 +6,8 @@ import org.jooq.tools.json.JSONObject;
 
 import java.sql.*;
 
+import static com.web.ehrapp.api.Sundhedspersonale.sanitizeXSS;
+
 public class FolkeregisterDAO {
     public DBConnection db;
 
@@ -49,7 +51,7 @@ public class FolkeregisterDAO {
             String name = result.getString(2);
             int antalKonsultationer = result.getInt(3);
             record.put("cpr", formatCpr(cpr));
-            record.put("name", name);
+            record.put("name", sanitizeXSS(name));
             record.put("antalKonsultationer", antalKonsultationer);
             array.add(record);
         }
