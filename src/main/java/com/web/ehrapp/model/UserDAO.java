@@ -49,6 +49,8 @@ public class UserDAO {
         return null;
     }
 
+
+
     public JSONObject getUserJSON(String email) throws SQLException {
         PreparedStatement pstmt = db.conn.prepareStatement("SELECT users.*, count(c.createdBy) as antal_konsultationer from users left join consults c on users.id = c.createdBy WHERE email = ? LIMIT 1");
         pstmt.setString(1, email);
@@ -67,7 +69,7 @@ public class UserDAO {
         JSONArray array = new JSONArray();
 
 
-        if(result.next()){   // Move the cursor to the next row
+        while (result.next()){   // Move the cursor to the next row
             JSONObject record = new JSONObject();
             int id = result.getInt(1);
             String name = result.getString(2);
@@ -125,6 +127,11 @@ public class UserDAO {
         pstmt.setInt(1, user.getId());
         pstmt.execute();
     }
+    public void deleteUser(int id) throws SQLException {
+        PreparedStatement pstmt = db.conn.prepareStatement("DELETE FROM users WHERE id = ?");
+        pstmt.setInt(1, id);
+        pstmt.execute();
+    }
 
     public void updateUser(User user) throws SQLException {
         PreparedStatement pstmt = db.conn.prepareStatement("UPDATE users SET name = ?, role = ?, email = ?, password = ?, disabled = ? WHERE id = ?");
@@ -132,7 +139,7 @@ public class UserDAO {
         pstmt.setString(2, user.getRole());
         pstmt.setString(3, user.getEmail().toLowerCase());
         pstmt.setString(4, user.getPassword());
-        pstmt.setBoolean(4, user.isDisabled());
+        pstmt.setBoolean(5, user.isDisabled());
         pstmt.setInt(6, user.getId());
         pstmt.execute();
     }

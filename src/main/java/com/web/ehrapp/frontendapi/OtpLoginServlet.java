@@ -1,8 +1,8 @@
 package com.web.ehrapp.frontendapi;
 
 import com.twilio.rest.verify.v2.service.VerificationCheck;
+import com.web.ehrapp.TwilioApiKeys;
 import com.web.ehrapp.model.User;
-import com.web.ehrapp.model.UserDAO;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -10,24 +10,24 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import org.jooq.False;
 
 import java.io.IOException;
-import java.sql.SQLException;import com.twilio.Twilio;
-import com.twilio.rest.verify.v2.service.Verification;
+
+import com.twilio.Twilio;
 
 @WebServlet("/otp")
 public class OtpLoginServlet extends HttpServlet {
 
 
+
     public void init() {
-        Twilio.init("AC0ff136a5f7795a5cc92de171166f4154", "100de7b2cc06a042c5987992e1f6012d");
+        Twilio.init(TwilioApiKeys.SID, TwilioApiKeys.PASSWORD);
     }
 
 
     public boolean checkOtp(User user, String otpCode){
         VerificationCheck vc =  VerificationCheck.creator(
-                        "VAa420d68692e24ceb2f73412af976d7a3")
+                        TwilioApiKeys.VERIFY_SERVICE)
                 .setTo(user.getPhoneNumber())
                 .setCode(otpCode)
                 .create();

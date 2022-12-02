@@ -2,6 +2,7 @@ package com.web.ehrapp.frontendapi;
 
 import com.twilio.Twilio;
 import com.twilio.rest.verify.v2.service.Verification;
+import com.web.ehrapp.TwilioApiKeys;
 import com.web.ehrapp.model.User;
 import com.web.ehrapp.model.UserDAO;
 import jakarta.servlet.RequestDispatcher;
@@ -14,17 +15,15 @@ import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.Objects;
 
 @WebServlet("/login")
 public class UserLoginServlet extends HttpServlet {
 
     UserDAO dao;
-    public boolean OTP_ENABLED = false;
 
 
     public void init() {
-        Twilio.init("AC0ff136a5f7795a5cc92de171166f4154", "100de7b2cc06a042c5987992e1f6012d");
+        Twilio.init(TwilioApiKeys.SID, TwilioApiKeys.PASSWORD);
         try {
             dao = new UserDAO();
         } catch (SQLException e) {
@@ -46,7 +45,7 @@ public class UserLoginServlet extends HttpServlet {
 
     public Verification sendSms(User user){
         return Verification.creator(
-                        "VAa420d68692e24ceb2f73412af976d7a3",
+                        TwilioApiKeys.VERIFY_SERVICE,
                         user.getPhoneNumber(),
                         "sms")
                 .create();
@@ -82,7 +81,7 @@ public class UserLoginServlet extends HttpServlet {
             } else{
                 HttpSession session = request.getSession();
                 session.setAttribute("user", user);
-                if(user.isPhoneNumberRegistered() && OTP_ENABLED){
+                if(user.isPhoneNumberRegistered() && TwilioApiKeys.OTP_ENABLED){
                     session.setAttribute("otpVerified", false);
                     session.setAttribute("otpTries", 0);
                     response.sendRedirect(request.getContextPath() + "/otp.jsp");

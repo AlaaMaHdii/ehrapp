@@ -55,16 +55,31 @@ $(document).ready( function () {
                 name: "name"
             },
             {
+                label: "Stilling",
+                name: "roles", type: 'checkbox',
+                separator:  ", ",
+                options: [
+                    { label: "Administrator", value: "Admin" },
+                    { label: "Læge", value: "Læge" },
+                    { label: "API-adgang", value: "API" }
+                ]
+            },
+            {
+                label: "E-mail",
+                name: "email"
+            },
+            {
                 label: "Telefonnummer",
                 name: "phoneNumber"
             },
             {
-                label: "Stilling",
-                name: "roles"
-            },
-            {
-                label: "email",
-                name: "email"
+                label: "Adgang",
+                name:  "isDisabled",
+                type:  "radio",
+                options: [
+                    { label: "Tilladt", value: false },
+                    { label: "Blokeret",  value: true }
+                ]
             },
             {
                 label: "Adgangskode",
@@ -73,23 +88,43 @@ $(document).ready( function () {
             ]
     });
 
-    // Activate an inline edit on click of a table cell
-    // tbody td.editable
-    $('#personale').on( 'click', 'tbody td:not(:first-child)', function (e) {
-        editor.inline( this, {
-            buttons: { label: '&gt;', fn: function () { this.submit(); } }
-        } );
-    } );
 
+    editor.on('preOpen', function (e, mode, action) {
+        if(action == 'remove') {
+            let canContinue = true;
+            var data = personaleTabel.rows( { selected: true } ).data().toArray();
+            for(row in data){
+                if(data[row].antalKonsultationer != 0){
+                    personaleTabel.buttons.info(
+                        'Advarsel',
+                        'Kan ikke slette en medarbejder hvor der er konsultationer registeret. Blokere adgangen i stedet.',
+                        3000
+                    );
+                    return false;
+                }
+            }
+            return true;
+        }
+    });
 
-    $('#personale').DataTable({
-        ajax: '../rest/consultations',
+    var personaleTabel = $('#personale').DataTable({
+        ajax: '../rest/sundhedspersonale',
         columns: [
             { data: 'name' },
-            { data: 'phoneNumber' },
-            { data: 'roles' },
+            { data: 'roles'},
             { data: 'email' },
-            { data: 'password'}
+            { data: 'phoneNumber'},
+            { data: 'antalKonsultationer'},
+            { data: 'password'},
+            { data: 'isDisabled', render: function ( data, type, row, meta ) {
+                    if(type === 'display'){
+                        if(data){
+                            return "Blokeret"
+                        }
+                        return "Tilladt"
+                    }
+                    return data;
+                } }
         ],
         responsive: true,
         language: {

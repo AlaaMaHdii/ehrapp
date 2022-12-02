@@ -1,9 +1,6 @@
 package com.web.ehrapp.api;
 
-import com.web.ehrapp.model.Borger;
-import com.web.ehrapp.model.FolkeregisterDAO;
-import com.web.ehrapp.model.User;
-import com.web.ehrapp.model.UserDAO;
+import com.web.ehrapp.model.*;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -27,33 +24,148 @@ public class Sundhedspersonale extends Application {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed("Læge")
-    public String getCitizens(@Context HttpServletRequest req) throws SQLException {
+    public String getPersonnel(@Context HttpServletRequest req) throws SQLException {
         UserDAO dao = new UserDAO();
         return dao.getUsersJSON().toString();
     }
+    @POST
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    @RolesAllowed("Læge")
+    public String modifyPersonnel(@Context HttpServletRequest req, @Context final HttpServletResponse response, Form form) throws SQLException, IOException {
+        UserDAO dao = new UserDAO();
+        MultivaluedMap<String, String> formParams = form.asMap();
+        String action = formParams.getFirst("action");
+
+        String[] ids  = getIds(req);
+        // tjek om det var edit
+        if(!Objects.equals(action, "edit")){
+            return "Denne method er ikke tilladt.";
+        }
+        for (String id : ids) {
+            User user = dao.getUser(Integer.parseInt(id));
+
+            String name = formParams.getFirst("data[" + id + "][name]");
+            String email = formParams.getFirst("data[" + id + "][email]");
+            String roles = formParams.getFirst("data[" + id + "][roles]");
+            String phoneNumber = formParams.getFirst("data[" + id + "][phoneNumber]");
+            String isDisabled = formParams.getFirst("data[" + id + "][isDisabled]");
+            String password = formParams.getFirst("data[" + id + "][password]").replace("●", "");
+
+            // check if password has been changed
+            if(!password.isEmpty()){
+                user.setPassword(dao.encryptPassword(password));
+            }
+
+            // set disabled status
+            if(!isDisabled.isEmpty()){
+                user.setDisabled(Boolean.parseBoolean(isDisabled));
+            }
+
+            if(!phoneNumber.isEmpty()){
+                user.setPhoneNumber(phoneNumber);
+            }
+
+            if(!roles.isEmpty()){
+                user.setRole(roles);
+            }
+
+            if(!email.isEmpty()){
+                user.setEmail(email);
+            }
+
+            if(!name.isEmpty()){
+                user.setName(name);
+            }
+
+            dao.updateUser(user);
+
+        }
+
+        return dao.getUsersJSON().toString();
+    }
+
 
     @DELETE
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @RolesAllowed("Læge")
-    public String deleteCitizen(@Context HttpServletRequest req, @Context final HttpServletResponse response, Form form) throws SQLException, IOException {
-        return "";
+    public String deletePersonnel(@Context HttpServletRequest req, @Context final HttpServletResponse response, Form form) throws SQLException, IOException {
+        UserDAO dao = new UserDAO();
+        MultivaluedMap<String, String> formParams = form.asMap();
+        String action = formParams.getFirst("action");
+
+        String[] ids  = getIds(req);
+        // tjek om det var edit
+        for (String id : ids) {
+            dao.deleteUser(Integer.parseInt(id));
+        }
+
+        return dao.getUsersJSON().toString();
     }
 
     @PUT
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @RolesAllowed("Læge")
-    public String addCitizen(@Context HttpServletRequest req, @Context final HttpServletResponse response, Form form) throws SQLException, IOException {
-        return "";
-    }
+    public String addPersonnel(@Context HttpServletRequest req, @Context final HttpServletResponse response, Form form) throws SQLException, IOException {
+        MultivaluedMap<String, String> formParams = form.asMap();
+        UserDAO dao = new UserDAO();
+        String action = formParams.getFirst("action");
 
-    @POST
-    @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    @RolesAllowed("Læge")
-    public String modifyCitizen(@Context HttpServletRequest req, @Context final HttpServletResponse response, Form form) throws SQLException, IOException {
-        return "";
+        // error handling
+        ArrayList<String> errors = new ArrayList<String>();
+        ArrayList<String> fieldNames = new ArrayList<String>();
+
+        // Opret consultation
+        if(Objects.equals(action, "create")) {
+            String name = formParams.getFirst("data[0][name]");
+            String email = formParams.getFirst("data[0][email]");
+            String roles = formParams.getFirst("data[0][roles]");
+            String phoneNumber = formParams.getFirst("data[0][phoneNumber]");
+            boolean isDisabled = Boolean.parseBoolean(formParams.getFirst("data[0][isDisabled]"));
+            String password = formParams.getFirst("data[0][password]");
+
+
+            // check if password has been changed
+            if(password.isEmpty()){
+                errors.add("Password feltet må ikke være tomt.");
+                fieldNames.add("password");
+            }
+
+
+            if(!phoneNumber.startsWith("+")){
+                errors.add("Telefonnummeret er ugyldigt. Skal start med \"+\"");
+                fieldNames.add("phoneNumber");
+            }
+
+            if(roles.isEmpty()){
+                errors.add("Der skal være en stilling tilknyttet.");
+                fieldNames.add("roles");
+            }
+
+            if(email.isEmpty()){
+                errors.add("E-mail er ugyldigt.");
+                fieldNames.add("email");
+            }
+
+            if(name.isEmpty()){
+                errors.add("Navn er ugyldigt.");
+                fieldNames.add("name");
+            }
+
+
+            if(!errors.isEmpty()){
+                response.setStatus(400);
+                response.flushBuffer();
+                return addErrors(errors.toArray(new String[0]), fieldNames.toArray(new String[0])).toString();
+            }
+
+            User newUser = dao.createUser(name, roles, email, password, phoneNumber, isDisabled);
+            return dao.getUserJSON(newUser.getEmail()).toString();
+
+        }
+        return "Der er opstået en fejl.";
     }
 
     public JSONObject addError(String error){
@@ -81,7 +193,7 @@ public class Sundhedspersonale extends Application {
 
 
     public String[] getIds(HttpServletRequest req){
-        String paramId = req.getParameter("cpr");
+        String paramId = req.getParameter("id");
         return paramId.split(",");
     }
 

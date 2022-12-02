@@ -10,8 +10,11 @@ public class User implements Principal {
     public String getPhoneNumber() {
         return phoneNumber;
     }
+    public void setPhoneNumber(String phoneNumber){
+        this.phoneNumber = phoneNumber;
+    }
 
-    private final String phoneNumber;
+    private String phoneNumber;
     private int id;
     private String name;
     private String role;
