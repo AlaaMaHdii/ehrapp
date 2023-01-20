@@ -10,18 +10,16 @@
 %>
 
 
-<html lang="da"><head>
-    <title>EHR - Log ind</title>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"> <!-- Ældre version fordi 5.2.2 gør log ind knappen gennemsigtig. -->
-    <link href="index.css" rel="stylesheet">
+<<html lang="da"><head>
+<title>EHR - Log ind</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="index.css" rel="stylesheet">
 </head>
 <body>
-
 <div id="main-wrapper" class="container">
     <div class="row justify-content-center">
         <div class="col-xl-10">
@@ -35,17 +33,7 @@
                                 </div>
                                 <h6 class="h5 mb-0" style=" color: #fff;">Velkommen tilbage!</h6>
                                 <p class="text-muted mt-2" style="color: #a1a1a1!important;">Indtast din e-mailadresse og adgangskode for at få adgang til EHR-systemet.</p>
-                                <%
-                                    if(request.getAttribute("message") != null){
-                                %>
-                                <div class="alert alert-danger" role="alert">
-                                    ${message}
-                                </div>
-
-                               <% }
-                               %>
-
-                                <form action="${pageContext.request.contextPath}/login" method="post">
+                                <form action="/login" method="post">
                                     <div class="form-group">
                                         <label style="color: #fff;">Email</label>
                                         <div class="input-group">
@@ -66,7 +54,6 @@
                                 </form>
                             </div>
                         </div>
-
                         <div class="col-lg-6 d-none d-lg-inline-block">
                             <div class="billede-block">
                                 <div class="overlay"></div>
@@ -77,23 +64,18 @@
                             </div>
                         </div>
                     </div>
-
                 </div>
-                <!-- slutningen af card-body -->
+
             </div>
-            <!-- slutningen af card -->
 
-            <p class="text-muted text-center mt-3 mb-0" style="color: #cccccc!important;">Har du ikke en konto? Kontakt dit ambulatorie for at få adgang.</p>
-
-            <!-- slutning af rækken -->
+            <p class="text-muted text-center mt-3 mb-0" style="color: #cccccc!important;">Er du ikke en del af sundhedspersonalet? <a href="patient-login.jsp">Tryk her for at logge ind som patient.</a></p>
 
         </div>
-        <!-- slutning af col -->
+
     </div>
-    <!-- Row -->
+
 </div>
 
-<!-- Eventuelle JS-koder -->
 <script src="https://unpkg.com/typewriter-effect@latest/dist/core.js"></script>
 <script>
     var typewriter_citat = new Typewriter(document.getElementById('citat'), {
