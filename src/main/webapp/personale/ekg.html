@@ -31,19 +31,7 @@
             <ul  class="ms-auto navbar-nav">
                 <!--- Li = række i en liste-->
                 <li class="nav-item">
-                    <a class="nav-link active" href="dashboard.html">Overblik</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="folkeregister.html">Folkeregister</a>
-                </li>
-
-                <!--- HVIS man er ADMINISTRATOR--->
-                <li class="nav-item">
-                    <a class="nav-link" href="sundhedspersonale.html">Sundhedspersonale</a>
-                </li>
-                <!--- SLUT HVIS man er ADMINISTRATOR--->
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Lab-data</a>
+                    <a class="nav-link active" href="#">Min behandling</a>
                 </li>
             </ul>
 
@@ -53,7 +41,7 @@
                     <button type="button" class="btn btn-primary">Tilføj konsultation</button>
                 </li> -->
                 <li class="nav-item">
-                    <a class="nav-link" href="../logout">Log ud</a>
+                    <a class="nav-link" href="#">Log ud</a>
                 </li>
             </ul>
         </div>
@@ -66,17 +54,7 @@
 
 <!--- Tabel --->
 <div class="container-xxl rounded-3 m-5 mx-auto align-content-center p-3" style="background-color: #f3f3f3">
-    <table id="consults" style="width:100%" class="table table-striped">
-        <thead>
-        <tr>
-            <th>Navn</th>
-            <th>CPR</th>
-            <th>Dato</th>
-            <th>Varighed</th>
-            <th>Note</th>
-        </tr>
-        </thead>
-    </table>
+
 </div>
 
 <!--- Biblioteker --->
@@ -87,9 +65,10 @@
 <script type="text/javascript" src="https://cdn.datatables.net/v/bs5/jszip-2.5.0/dt-1.12.1/af-2.4.0/b-2.2.3/b-colvis-2.2.3/b-html5-2.2.3/b-print-2.2.3/cr-1.5.6/date-1.1.2/kt-2.7.0/r-2.3.0/sl-1.4.0/sr-1.1.1/datatables.min.js"></script>
 <script src="//cdn.datatables.net/1.12.1/js/dataTables.bootstrap5.min.js" crossorigin="anonymous"></script>
 <script src="js/dataTables.editor.js" crossorigin="anonymous"></script>
-<script src="js/editor.bootstrap5.js" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/locale/da.min.js" crossorigin="anonymous"></script>
+<script src="https://canvasjs.com/assets/script/canvasjs.min.js"> </script>
+<script src="js/ekg.js" crossorigin="anonymous"></script>
 
 <!--- Eget JS kode --->
 <script src="js/consults.js" crossorigin="anonymous"></script>

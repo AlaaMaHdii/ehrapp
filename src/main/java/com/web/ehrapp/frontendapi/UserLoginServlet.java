@@ -64,11 +64,10 @@ public class UserLoginServlet extends HttpServlet {
         String destination = "/login.jsp";
         try {
             // Bug serveren mister forbindelse til MySQL efter noget tid.
-            if(dao.db.conn.isClosed()){
-                dao.db.connectToDb();
-            }
+            dao.db.connectToDb();
 
             user = dao.getUser(email); // hent brugeren
+
             String message;
             if(user == null){
                 //String message = "Ugyldig e-mail. Prøv igen.";

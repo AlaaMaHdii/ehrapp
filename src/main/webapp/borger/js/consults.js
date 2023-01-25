@@ -32,21 +32,23 @@ $.fn.dataTable.render.moment = function ( from, to, locale ) {
 
 // Start tabel når hjemmesiden er klar.
 $(document).ready( async function () {
+
+
     editor = new $.fn.dataTable.Editor({
         idSrc: 'id',
         table: "#consults",
         ajax: {
             create: {
                 type: 'PUT',
-                url: '../rest/consultations'
+                url: '../rest/borgerConsultations'
             },
             edit: {
                 type: 'POST',
-                url: '../rest/consultations?id={id}'
+                url: '../rest/borgerConsultations?id={id}'
             },
             remove: {
                 type: 'DELETE',
-                url: '../rest/consultations?id={id}'
+                url: '../rest/borgerConsultations?id={id}'
             }
         },
         fields: [
@@ -55,10 +57,6 @@ $(document).ready( async function () {
                 name: "idOfDoctor",
                 type: "select",
                 options: await $.getJSON('../rest/getDoctors'),
-            },
-            {
-                label: "CPR-nummer",
-                name: "cpr"
             },
             {
                 label: "Dato",
@@ -71,10 +69,6 @@ $(document).ready( async function () {
                     disableDays: [0,6],
                     hoursAvailable: [8, 9, 10, 11, 12, 13, 14, 15, 16]
                 }
-            },
-            {
-                label: "Varighed i sek",
-                name: "duration"
             },
             {
                 label: "Note",
@@ -96,7 +90,7 @@ $(document).ready( async function () {
 
 
     $('#consults').DataTable({
-        ajax: '../rest/consultations',
+        ajax: '../rest/borgerConsultations',
         columns: [
             {data: 'patientName'},
             {data: 'cpr'},
@@ -132,8 +126,9 @@ $(document).ready( async function () {
         }, 'excel',
             {extend: "create", editor: editor},
             {extend: "edit", editor: editor},
-            {extend: "remove",  text: 'Afbestil', editor: editor}
+            {extend: "remove", text: 'Afbestil',  editor: editor}
         ]
     });
+
 } );
 

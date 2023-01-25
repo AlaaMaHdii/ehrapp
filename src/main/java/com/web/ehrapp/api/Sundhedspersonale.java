@@ -200,8 +200,10 @@ public class Sundhedspersonale extends Application {
     }
 
     public static String sanitizeXSS(String unsafeInput){
-        PolicyFactory policy = Sanitizers.FORMATTING.and(Sanitizers.LINKS);
-        return policy.sanitize(unsafeInput);
+        // deaktiveret for nu
+        //PolicyFactory policy = Sanitizers.FORMATTING.and(Sanitizers.LINKS);
+        //return policy.sanitize(unsafeInput);
+        return unsafeInput;
     }
 
 }

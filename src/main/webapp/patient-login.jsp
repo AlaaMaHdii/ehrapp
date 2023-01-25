@@ -3,10 +3,7 @@
     if(session.getAttribute("user") !=null && session.getAttribute("otpVerified").equals(true))
     {
         response.sendRedirect(request.getContextPath() + "/personale/dashboard.html");
-    }else if (session.getAttribute("user") !=null && session.getAttribute("otpVerified").equals(false)){
-        response.sendRedirect(request.getContextPath() + "/otp.jsp");
     }
-
 %>
 
 
@@ -34,7 +31,7 @@
                                     <img src="https://i.imgur.com/eP2kkTb.png" style="height: 100px" alt="logo" class="logo">
                                 </div>
                                 <h6 class="h5 mb-0" style=" color: #fff;">Velkommen tilbage!</h6>
-                                <p class="text-muted mt-2" style="color: #a1a1a1!important;">Indtast din e-mailadresse og adgangskode for at få adgang til EHR-systemet.</p>
+                                <p class="text-muted mt-2" style="color: #a1a1a1!important;">Indtast dit CPR-nummer for at logge ind på EHR-systemet.</p>
                                 <%
                                     if(request.getAttribute("message") != null){
                                 %>
@@ -45,24 +42,16 @@
                                <% }
                                %>
 
-                                <form action="${pageContext.request.contextPath}/login" method="post">
+                                <form action="${pageContext.request.contextPath}/patient-login" method="post">
                                     <div class="form-group">
-                                        <label style="color: #fff;">Email</label>
+                                        <label style="color: #fff;">CPR</label>
                                         <div class="input-group">
                                             <div class="input-group-text"><i class="bi bi-person-fill"></i></div>
-                                            <input type="text" class="form-control" placeholder="Indtast Email" id="email" name="email" value="alaa@gmail.com">
+                                            <input type="text" class="form-control" placeholder="Indtast cpr" id="cpr" name="CPR" value="210453-0039">
                                         </div>
                                     </div>
                                     <br>
-                                    <div class="form-group mb-5">
-                                        <label style="color: #fff;">Kodeord</label>
-                                        <div class="input-group">
-                                            <div class="input-group-text"><i class="bi bi-lock-fill"></i></div>
-                                            <input type="password" id="password" name="password" class="form-control" placeholder="Indtast kodeord" value="solsol99">
-                                        </div>
-                                    </div>
                                     <button type="submit" class="btn btn-theme">Log ind</button>
-                                    <a href="#glemtKode" class="forgot-link float-right text-primary" style="padding-left: 10px;color:#c7ddff!important">Glemt adgangskode?</a>
                                 </form>
                             </div>
                         </div>
@@ -83,7 +72,7 @@
             </div>
             <!-- slutningen af card -->
 
-            <p class="text-muted text-center mt-3 mb-0" style="color: #cccccc!important;">Er du ikke en del af sundhedspersonalet? <a href="patient-login.jsp">Tryk her for at logge ind som patient.</a></p>
+            <p class="text-muted text-center mt-3 mb-0" style="color: #cccccc!important;">Er du ikke en patient? <a href="login.jsp">Tryk her for at logge ind som personale.</a></p>
 
             <!-- slutning af rækken -->
 

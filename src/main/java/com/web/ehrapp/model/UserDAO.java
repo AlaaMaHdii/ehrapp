@@ -66,6 +66,36 @@ public class UserDAO {
         return parseResultUser(result);
     }
 
+    public JSONArray getUsersDataTableSelectJSON() throws SQLException {
+        PreparedStatement pstmt = db.conn.prepareStatement("SELECT users.*, count(c.createdBy) as antal_konsultationer from users left join consults c on users.id = c.createdBy group by users.id");
+        ResultSet result = pstmt.executeQuery();
+        JSONObject jsonObject = new JSONObject();
+        JSONArray array = new JSONArray();
+
+
+        while (result.next()){   // Move the cursor to the next row
+            JSONObject record = new JSONObject();
+            int id = result.getInt(1);
+            String name = result.getString(2);
+            String role = result.getString(3);
+            String email = result.getString(4);
+            String password = result.getString(5);
+            String phoneNumber = result.getString(6);
+            boolean disabled = result.getBoolean(7);
+            int antalKonsultationer = result.getInt(8);
+            User user =  new User(id, name, role, email, password, phoneNumber,disabled, this);
+
+            // Vis kun hvis lægen stadig arbejder der.
+            if(!user.isDisabled()) {
+                record.put("label", user.getName());
+                record.put("value", user.getId());
+                array.add(record);
+            }
+        }
+        return array;
+    }
+
+
     private JSONObject parseResultUser(ResultSet result) throws SQLException {
         JSONObject jsonObject = new JSONObject();
         JSONArray array = new JSONArray();

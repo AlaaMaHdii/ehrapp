@@ -63,6 +63,26 @@ public class User implements Principal {
     public String getEmail() {
         return email;
     }
+    private String[] getUserRoles(){
+        return this.getRole().split(", ");
+    }
+
+    public boolean isUserInRole(String role){
+        for (String roleIteration: getUserRoles()) {
+            // if admin
+            if(roleIteration.equalsIgnoreCase("Admin")){
+                //return true;
+            }
+
+            if(roleIteration.equalsIgnoreCase(role)){
+                System.out.println("role " +  role + " true");
+                return true;
+            }
+        }
+        // Returnere false hvis man ikke er admin.... Så Admin har adgang til alt.
+        System.out.println("role " +  role + " false");
+        return false;
+    }
 
     public void setName(String name) {
         this.name = name;

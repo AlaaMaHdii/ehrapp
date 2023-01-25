@@ -44,8 +44,6 @@ public class Consultation {
         this.startDate = startDate;
     }
 
-
-
     public int getDuration() {
         return duration;
     }

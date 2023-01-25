@@ -13,7 +13,7 @@ import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import java.sql.SQLException;
 
-@WebServlet("/personale/logout")
+@WebServlet("/logout")
 public class UserLogoutServlet extends HttpServlet {
 
 

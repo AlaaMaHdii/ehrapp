@@ -1,0 +1,35 @@
+body{
+    margin-top:20px;
+    background: linear-gradient(to bottom, #485563, #29323c);
+}
+.billede-block {
+    padding: 0;
+    background-image: url("https://i.imgur.com/IrmRAyf.png");
+    border-top-right-radius: 37px;
+    border-bottom-right-radius: 37px;
+    background-repeat: no-repeat;
+    background-size: cover;
+    height: 100%;
+    position: relative;
+}
+
+.billede-block .login-citat {
+    text-align: center;
+    color: #fff;
+    position: absolute;
+    margin: 0 auto;
+    padding: 0 1.75rem;
+    bottom: 1rem;
+    left: 0;
+    right: 0;
+}
+
+.text-theme {
+    color: #5369f8 !important;
+}
+
+.btn-theme {
+    background-color: #5369f8;
+    border-color: #5369f8;
+    color: #fff;
+}

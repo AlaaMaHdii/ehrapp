@@ -1,9 +1,6 @@
-package com.web.ehrapp.api;
+package com.web.ehrapp.apiBorger;
 
-import com.web.ehrapp.model.Consultation;
-import com.web.ehrapp.model.ConsultationDAO;
-import com.web.ehrapp.model.User;
-import com.web.ehrapp.model.UserDAO;
+import com.web.ehrapp.model.*;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -18,10 +15,9 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.Objects;
 
-@Path("consultations")
+@Path("borgerConsultations")
 @AuthenticationRequired
 public class Consultations extends Application {
 
@@ -30,22 +26,19 @@ public class Consultations extends Application {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed("Læge")
     public String getConsultations(@Context HttpServletRequest req) throws SQLException {
-       User user = (User) securityContext.getUserPrincipal();
-       ConsultationDAO dao = new ConsultationDAO(user);
-       return dao.getConsultationsJSON().toString();
+       Borger borger = (Borger) securityContext.getUserPrincipal();
+       return borger.getConsultationsJSON().toString();
     }
 
     @DELETE
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    @RolesAllowed("Læge")
     public String deleteConsultations(@Context HttpServletRequest req, @Context final HttpServletResponse response, Form form) throws SQLException, IOException {
-        User user = (User) securityContext.getUserPrincipal();
+        Borger borger = (Borger) securityContext.getUserPrincipal();
         String[] ids = getIds(req);
         MultivaluedMap<String, String> formParams = form.asMap();
-        ConsultationDAO dao = new ConsultationDAO(user);
+        ConsultationDAO dao = new ConsultationDAO(null);
 
 
         // Ikke det bedste, men virker for nu.
@@ -53,17 +46,15 @@ public class Consultations extends Application {
             dao.deleteConsultation(Integer.parseInt(id));
         }
 
-        return dao.getConsultationsJSON().toString();
+        return borger.getConsultationsJSON().toString();
     }
 
     @PUT
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    @RolesAllowed("Læge")
     public String addConsultations(@Context HttpServletRequest req, @Context final HttpServletResponse response, Form form) throws SQLException, IOException {
-        User user = (User) securityContext.getUserPrincipal();
+        Borger borger = (Borger) securityContext.getUserPrincipal();
         MultivaluedMap<String, String> formParams = form.asMap();
-        ConsultationDAO dao = new ConsultationDAO(user);
         String action = formParams.getFirst("action");
 
         // error handling
@@ -72,44 +63,22 @@ public class Consultations extends Application {
 
         // Opret consultation
         if(Objects.equals(action, "create")) {
-            String idOfDoctor = formParams.getFirst("data[0][idOfDoctor]");
-            String cpr = formParams.getFirst("data[0][cpr]");
+            int idOfDoctor = Integer.parseInt(formParams.getFirst("data[0][idOfDoctor]"));
             String startDate = formParams.getFirst("data[0][startDate]");
-            String duration = formParams.getFirst("data[0][duration]");
+            String duration = "900";
             String note = formParams.getFirst("data[0][note]");
 
-            boolean errorOccurred = false;
+            boolean errorOccured = false;
 
-            // find den anden læge hvis det er blevet valgt.
-            if(!idOfDoctor.isEmpty()){
-                try {
-                    int idOfDoctorParsed = Integer.parseInt(idOfDoctor);
-                    User newUser = user.getDao().getUser(idOfDoctorParsed);
-                    if(newUser != null){
-                        dao.setUser(newUser);
-                    }
-
-                }catch (Exception ignored){
-
-                }
+            UserDAO uDao = new UserDAO();
+            User user = uDao.getUser(idOfDoctor);
+            if(user.isDisabled()) {
+                errors.add("Du skal vælge en læge, der stadig arbejder der.");
+                fieldNames.add("idOfDoctor");
+                errorOccured = true;
             }
 
-
-            // Validate
-
-
-            // CPR
-            if(cpr != null) {
-                if (!dao.patientExists(cpr.replace("-", ""))) {
-                    errors.add("CPR-nummeret findes ikke");
-                    fieldNames.add("cpr");
-                    errorOccurred = true;
-                }
-            }else{
-                errors.add("CPR-nummeret må ikke være tomt");
-                fieldNames.add("cpr");
-                errorOccurred = true;
-            }
+            ConsultationDAO dao = new ConsultationDAO(user);
 
             // Startdato
             Timestamp timestamp = null;
@@ -117,16 +86,16 @@ public class Consultations extends Application {
                 try {
                     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
                     Date parsedDate = dateFormat.parse(startDate);
-                    timestamp = new java.sql.Timestamp(parsedDate.getTime());
+                    timestamp = new Timestamp(parsedDate.getTime());
                 } catch (Exception e) { // Hvis startdato ikke passer
                     errors.add("Dato formattet kunne ikke genkendes");
                     fieldNames.add("startDate");
-                    errorOccurred = true;
+                    errorOccured = true;
                 }
             }else{
                 errors.add("Dato formattet må ikke være tomt.");
                 fieldNames.add("startDate");
-                errorOccurred = true;
+                errorOccured = true;
             }
 
             // Varighed
@@ -136,19 +105,19 @@ public class Consultations extends Application {
                 } catch (Exception E) {
                     errors.add("Varighed skal skrives i tal som sekunder.");
                     fieldNames.add("duration");
-                    errorOccurred = true;
+                    errorOccured = true;
                 }
             }else{
                 errors.add("Varighed må ikke være tomt.");
                 fieldNames.add("duration");
-                errorOccurred = true;
+                errorOccured = true;
             }
 
-            if(errorOccurred){
+            if(errorOccured){
                 return addErrors(errors.toArray(new String[0]), fieldNames.toArray(new String[0])).toString();
             }
 
-            Consultation consultation = dao.createConsultation(cpr.replace("-", ""), timestamp, Integer.parseInt(duration), note, 0);
+            Consultation consultation = dao.createConsultation(borger.getCpr().replace("-", ""), timestamp, Integer.parseInt(duration), note, 0);
             return dao.getConsultationJSON(consultation.getId()).toString();
         }
         return null;
@@ -157,33 +126,31 @@ public class Consultations extends Application {
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    @RolesAllowed("Læge")
     public String modifyConsultations(@Context HttpServletRequest req, @Context final HttpServletResponse response, Form form) throws SQLException, IOException {
-        User user = (User) securityContext.getUserPrincipal();
+        Borger borger = (Borger) securityContext.getUserPrincipal();
         String[] ids = getIds(req);
         MultivaluedMap<String, String> formParams = form.asMap();
         String action = formParams.getFirst("action");
-        ConsultationDAO dao = new ConsultationDAO(user);
         ArrayList<String> errors = new ArrayList<String>();
         ArrayList<String> fieldNames = new ArrayList<String>();
         boolean errorOccured = false;
 
         if(Objects.equals(action, "edit")) {
             for (String id : ids) {
-                Consultation consultation = dao.getConsultation(Integer.parseInt(id));
                 String idOfDoctor = formParams.getFirst("data[" + id + "][idOfDoctor]");
+                User user = null;
 
-                if(!idOfDoctor.isEmpty()){
+
+                if(!idOfDoctor.isEmpty()) {
                     UserDAO uDao = new UserDAO();
                     user = uDao.getUser(Integer.parseInt(idOfDoctor));
-                    if(user != null && !user.isDisabled()) {
-                        consultation.setCreatedBy(user);
-                    }else{
-                        errors.add("Lægen arbejder der ikke.");
-                        fieldNames.add("idOfDoctor");
-                        errorOccured = true;
-                    }
                 }
+
+                ConsultationDAO dao = new ConsultationDAO(user);
+                Consultation consultation = dao.getConsultation(Integer.parseInt(id));
+
+                // update user
+                consultation.setCreatedBy(user);
 
                 // CPR
                 String cpr = formParams.getFirst("data[" + id + "][cpr]");
@@ -193,7 +160,7 @@ public class Consultations extends Application {
                         fieldNames.add("cpr");
                         errorOccured = true;
                     }
-                    consultation.setCpr(cpr.replace("-", ""));
+                    consultation.setCpr(cpr);
                 }
 
 
@@ -203,7 +170,7 @@ public class Consultations extends Application {
                     try {
                         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
                         Date parsedDate = dateFormat.parse(startDate);
-                        Timestamp timestamp = new java.sql.Timestamp(parsedDate.getTime());
+                        Timestamp timestamp = new Timestamp(parsedDate.getTime());
                         consultation.setStartDate(timestamp);
                     } catch (Exception e) { // Hvis startdato ikke passer
                         errors.add("Dato formattet kunne ikke genkendes");
@@ -242,7 +209,7 @@ public class Consultations extends Application {
         }
 
 
-        return dao.getConsultationsJSON().toString();
+        return borger.getConsultationsJSON().toString();
 
     }
 

@@ -1,10 +1,12 @@
-package com.web.ehrapp.api;
+package com.web.ehrapp.apiBorger;
 
+import com.web.ehrapp.model.Borger;
+import com.web.ehrapp.model.FolkeregisterDAO;
 import com.web.ehrapp.model.User;
 import com.web.ehrapp.model.UserDAO;
 import jakarta.annotation.Priority;
-import jakarta.annotation.security.DeclareRoles;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.ws.rs.NotAuthorizedException;
 import jakarta.ws.rs.Priorities;
@@ -35,49 +37,37 @@ public class AuthenticationAPIFilter implements ContainerRequestFilter {
 
         // Hvis man er logget ind med SESSION
         HttpSession session = webRequest.getSession();
-        User user = (User) session.getAttribute("user");
 
-        try {
-            UserDAO dao = new UserDAO();
-            user = dao.getUser(user.getId());
-        } catch (SQLException e) {
+        Borger borger = (Borger) session.getAttribute("borger");
 
+        // hent de nyeste opdateringer fra user objektet
+        if(borger != null){
+            try {
+                FolkeregisterDAO dao = new FolkeregisterDAO();
+                borger = dao.getBorger(borger.getCpr());
+            } catch (SQLException ignored) {
+            }
         }
 
-        // check if blocked
-        if(user.isDisabled()){
-            session.invalidate();
-            throw new NotAuthorizedException("Kontoen er blokeret.");
-        }
-
-        boolean otpVerified = false;
-        try {
-            otpVerified = (boolean) session.getAttribute("otpVerified");
-        }catch (Exception e){
-
-        }
-        if((!otpVerified || user == null) && !containerRequestContext.getUriInfo().getPath().endsWith("login.jsp")){
+        if(borger == null){
             throw new NotAuthorizedException("Ugyldig legitimationsoplysninger.");
         }
 
-        // Hvis man er logget ind med JWT
-        // blah blah
-
 
         SecurityContext securityContext = containerRequestContext.getSecurityContext();
-        User finalUser = user;
+        Borger finalBorger = borger;
         containerRequestContext.setSecurityContext(new SecurityContext()
         {
             @Override
             public Principal getUserPrincipal()
             {
-                return finalUser;
+                return finalBorger;
             }
 
             @Override
             public boolean isUserInRole(String role)
             {
-                return finalUser.isUserInRole(role);
+                return false;
             }
 
             @Override
